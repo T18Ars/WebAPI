@@ -67,6 +67,7 @@ namespace MyWebAPI.Controllers
         // Put: truyền field nào update field đấy, các field ko còn tồn tại hoặc giá trị default
         // Patch: truyền field nào update field đấy, các field ko ảnh hưởng, vẫn giữ giá trị cũ
         // test
+        // test tiep
         [HttpPut("{id}")]
         public IActionResult Edit(string id, HangHoa hanghoa)
         {
