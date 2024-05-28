@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyWebAPI.Models;
 using System;
@@ -28,6 +29,7 @@ namespace MyWebAPI.Controllers
         }
 
         [HttpPost]
+        //[Authorize]
         public IActionResult Add(HangHoa hanghoa)
         {
             try
@@ -39,7 +41,7 @@ namespace MyWebAPI.Controllers
                     DonGia = hanghoa.DonGia
                 };
                 hangHoas.Add(hh);
-                return Ok(hh);
+                return StatusCode(StatusCodes.Status201Created, hh);
             }
             catch (Exception)
             {
@@ -77,7 +79,7 @@ namespace MyWebAPI.Controllers
                 hh.TenHangHoa = hanghoa.TenHangHoa;
                 hh.DonGia = hanghoa.DonGia;
                 
-                return Ok(hh);
+                return NoContent();
             }
             catch (Exception)
             {
@@ -101,5 +103,29 @@ namespace MyWebAPI.Controllers
                 return BadRequest();
             }
         }
+
+        /*
+         * 1xx: infomational response
+         * 
+         * 2xx: success
+         * 200: OK - request thành công
+         * 201: Created - tạo mới xong trả luôn object vừa tạo
+         * 204: No Content - dùng cho api update
+         * 
+         * 3xx: redirection
+         * 
+         * 4xx: client error
+         * 400: Bad request - server ko hiểu client gửi lên cái gì, lỗi gì đó
+         * 401: Unauthorized - chưa chứng thực người dùng, chưa login
+         * 403: Forbidden - sau khi ng dùng chứng thực, login xong rồi nhưng ko có quyền (authorized) cho api này
+         * 404: Not Found - ko tìm thấy trang, ko tìm thấy id, ...
+         * 405: Method Not Allowed - sai cách gọi method http (HttpGet nhưng dùng HttpPost để gọi)
+         * 422: Unprocessable Entity - request gửi body, object (POST, PUT, PATCH) nhưng object thiếu cú pháp
+         * 
+         * 5xx: server error
+         * 500: Internal Server Error
+         * 503: Service Unavailable
+         * 504: Gateway Timeout: vượt quá thời gian Gateway chờ trong microservice
+         */
     }
 }
