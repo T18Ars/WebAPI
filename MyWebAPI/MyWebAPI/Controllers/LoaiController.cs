@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyWebAPI.Data;
+using MyWebAPI.Models;
+using MyWebAPI.Services.Loai;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,17 +15,17 @@ namespace MyWebAPI.Controllers
     [ApiController]
     public class LoaiController : ControllerBase
     {
-        private readonly MyDbContext _context;
+        private readonly ILoaiRepository _loaiRepository;
 
-        public LoaiController(MyDbContext context)
+        public LoaiController(ILoaiRepository loaiRepository)
         {
-            _context = context;
+            _loaiRepository = loaiRepository;
         }
         // GET: api/<LoaiController>
         [HttpGet]
         public IActionResult GetAll()
         {
-            var dsLoais = _context.Loais.ToList();
+            var dsLoais = _loaiRepository.GetAll();
             return Ok(dsLoais);
         }
 
@@ -32,7 +34,7 @@ namespace MyWebAPI.Controllers
         {
             try
             {
-                var loai = _context.Loais.FirstOrDefault(x => x.Ma == id);
+                var loai = _loaiRepository.GetById(id);
                 if (loai is not null)
                     return Ok(loai);
                 return NotFound();
@@ -44,16 +46,11 @@ namespace MyWebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(Models.Loai loai)
+        public IActionResult Add(LoaiVM loai)
         {
             try
             {
-                var item = new Loai
-                {
-                    Ten = loai.Ten
-                };
-                _context.Add(item);
-                _context.SaveChanges();
+                var item = _loaiRepository.Add(loai);
                 return Ok(item);
             }
             catch (Exception)
@@ -62,19 +59,14 @@ namespace MyWebAPI.Controllers
             }
         }
 
-        [HttpPut("{ma}")]
-        public IActionResult Edit(int ma, Models.Loai loai)
+        [HttpPut]
+        public IActionResult Edit(LoaiVM loai)
         {
             try
             {
-                var item = _context.Loais.FirstOrDefault(x => x.Ma == ma);
-                if (item is null)
-                    return NotFound();
-                item.Ten = loai.Ten;
-                _context.Update(item);
-                _context.SaveChanges();
+                _loaiRepository.Update(loai);
 
-                return Ok(item);
+                return NoContent();
             }
             catch (Exception)
             {
@@ -87,12 +79,8 @@ namespace MyWebAPI.Controllers
         {
             try
             {
-                var item = _context.Loais.FirstOrDefault(x => x.Ma == ma);
-                if (item is null)
-                    return NotFound();
-                _context.Remove(item);
-                _context.SaveChanges();
-                return Ok(_context.Loais.ToList());
+                _loaiRepository.Delete(ma);
+                return NoContent();
             }
             catch (Exception)
             {

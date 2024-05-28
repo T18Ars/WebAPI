@@ -78,7 +78,7 @@ namespace MyWebAPI.Controllers
                     return NotFound();
                 hh.TenHangHoa = hanghoa.TenHangHoa;
                 hh.DonGia = hanghoa.DonGia;
-                
+
                 return NoContent();
             }
             catch (Exception)
@@ -103,7 +103,7 @@ namespace MyWebAPI.Controllers
                 return BadRequest();
             }
         }
-
+        
         /*
          * 1xx: infomational response
          * 
