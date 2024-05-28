@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyWebAPI.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -10,6 +11,12 @@ namespace MyWebAPI.Data
     [Table("HangHoa")]
     public class HangHoa
     {
+        public HangHoa()
+        {
+            //DonHangChiTiets = new List<DonHangChiTiet>();
+            DonHangChiTiets = new HashSet<DonHangChiTiet>(); // khởi tạo [] tránh null
+        }
+
         [Key]
         public Guid MaHangHoa { get; set; }
 
@@ -28,5 +35,7 @@ namespace MyWebAPI.Data
 
         [ForeignKey("MaLoai")]
         public Loai Loai { get; set; }
+
+        public virtual ICollection<DonHangChiTiet> DonHangChiTiets { get; set; }
     }
 }

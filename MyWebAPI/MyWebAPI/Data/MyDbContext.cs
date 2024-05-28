@@ -19,5 +19,39 @@ namespace MyWebAPI.Data
 
         public DbSet<HangHoa> HangHoas { get; set; }
         public DbSet<Loai> Loais { get; set; }
+        public DbSet<DonHang> DonHangs { get; set; } // sẽ lấy DonHangs làm tên bảng nếu ko dùng fluent api
+        public DbSet<DonHangChiTiet> DonHangChiTiets { get; set; }
+
+        // sử dụng fluent api
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DonHang>(e =>
+            {
+                e.ToTable("DonHang");
+                e.HasKey(dh => dh.MaDh);
+                e.Property(dh => dh.NgayDat).HasDefaultValueSql("getdate()");
+                e.Property(dh => dh.NguoiNhan).IsRequired().HasMaxLength(100);
+            });
+
+
+            /*
+             * Fluent API là để định nghĩa chi tiết các mối quan hệ phức tạp giữa các entity (các bảng) cũng như các ràng buộc dữ liệu.
+             * Nếu không cần rảng buộc nhiều có thể định nghĩa trực tiếp trên entity model không cần dùng Fluent API.
+             */
+            modelBuilder.Entity<DonHangChiTiet>(e =>
+            {
+                e.ToTable("DonHangChiTiet");
+                e.HasKey(entity => new { entity.MaDh, entity.MaHh});
+                e.HasOne(entity => entity.DonHang)
+                    .WithMany(entity => entity.DonHangChiTiets)
+                    .HasForeignKey(entity => entity.MaDh)
+                    .HasConstraintName("FK_DonHangCT_DonHang");
+
+                e.HasOne(entity => entity.HangHoa)
+                    .WithMany(entity => entity.DonHangChiTiets)
+                    .HasForeignKey(entity => entity.MaHh)
+                    .HasConstraintName("FK_DonHangCT_HangHoa");
+            });
+        }
     }
 }
