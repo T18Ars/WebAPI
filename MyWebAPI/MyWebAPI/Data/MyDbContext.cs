@@ -21,10 +21,21 @@ namespace MyWebAPI.Data
         public DbSet<Loai> Loais { get; set; }
         public DbSet<DonHang> DonHangs { get; set; } // sẽ lấy DonHangs làm tên bảng nếu ko dùng fluent api
         public DbSet<DonHangChiTiet> DonHangChiTiets { get; set; }
+        public DbSet<NguoiDung> NguoiDungs { get; set; }
 
         // sử dụng fluent api
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<NguoiDung>(e =>
+            {
+                e.ToTable("NguoiDung");
+                e.HasKey(dh => dh.Id);
+                e.Property(dh => dh.UserName).IsRequired().HasMaxLength(50);
+                e.Property(dh => dh.Password).IsRequired().HasMaxLength(256);
+                e.Property(dh => dh.FullName).HasMaxLength(256);
+                e.Property(dh => dh.Email).HasMaxLength(256);
+            });
+
             modelBuilder.Entity<DonHang>(e =>
             {
                 e.ToTable("DonHang");

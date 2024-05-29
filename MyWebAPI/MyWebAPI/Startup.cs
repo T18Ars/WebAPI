@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MyWebAPI.Data;
+using MyWebAPI.Models;
 using MyWebAPI.Services.Loai;
 using System;
 using System.Text;
@@ -42,6 +43,11 @@ namespace MyWebAPI
 
             services.AddScoped<ILoaiRepository, LoaiRepository>();
 
+            /*
+             * sử dụng config này để tự động map dữ liệu tương ứng từ file appsetting.json sang file AppSetting.cs
+             */
+            services.Configure<AppSetting>(Configuration.GetSection("AppSettings"));
+
             #region authentication
             var secretKey = Configuration["AppSettings:SecretKey"];
             var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
@@ -50,13 +56,14 @@ namespace MyWebAPI
                 .AddJwtBearer(opt => {
                     opt.TokenValidationParameters = new TokenValidationParameters
                     {
-                        // tự cấp token
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
+                        ValidateIssuer = false, // Xác thực nhà phát hành của token
+                        ValidateAudience = false, // Xác thực người nhận của token
+                        ValidateIssuerSigningKey = true, // Xác thực khóa ký của nhà phát hành token
+                        ValidateLifetime = true, // Xác thực thời gian sống của token
 
-                        // ký vào token
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
+                        ValidIssuer = "nhannv", // Nhà phát hành hợp lệ của token
+                        ValidAudience = "user", // Người nhận hợp lệ của token
+                        IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes), // Khóa bí mật được sử dụng để ký token
                         ClockSkew = TimeSpan.Zero
                     };
                 });
@@ -85,6 +92,8 @@ namespace MyWebAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

@@ -29,7 +29,7 @@ namespace MyWebAPI.Controllers
         }
 
         [HttpPost]
-        //[Authorize]
+        [Authorize]
         public IActionResult Add(HangHoa hanghoa)
         {
             try
