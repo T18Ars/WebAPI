@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyWebAPI.Data;
+using MyWebAPI.Helpers;
 using MyWebAPI.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace MyWebAPI.Services.Loai
@@ -49,9 +52,36 @@ namespace MyWebAPI.Services.Loai
             }
         }
 
-        public List<LoaiVM> GetAll()
+        public List<LoaiVM> GetAll(int page, int page_size, string sort, dynamic filter, string search)
         {
-            return _context.Loais.Select(x => new LoaiVM
+            var query = _context.Loais.AsQueryable();
+
+            #region xử lý đầu vào filter
+            dynamic filterObj = HandlerFilterQuery.Handler(filter);
+            #endregion
+
+            #region filterObj
+            if (filterObj != null)
+            {
+                String ten = filterObj.ten;
+                if (!string.IsNullOrEmpty(ten))
+                {
+                    ten = ten.ToLower();
+                    query = query.Where(x => x.Ten.ToLower().Contains(ten));
+                }
+            }
+            #endregion
+
+            if (search is not null)
+            {
+                query.Where(x => x.Ten.Contains(search));
+            }
+
+            #region pagination
+            var result = PaginatedList<Data.Loai>.Create(query, page, page_size);
+            #endregion
+
+            return result.Select(x => new LoaiVM
             {
                 Ma = x.Ma,
                 Ten = x.Ten

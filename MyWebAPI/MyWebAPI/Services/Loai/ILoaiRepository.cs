@@ -8,7 +8,7 @@ namespace MyWebAPI.Services.Loai
 {
     public interface ILoaiRepository
     {
-        List<LoaiVM> GetAll();
+        List<LoaiVM> GetAll(int page, int page_size, string sort, dynamic filter, string search);
 
         LoaiVM GetById(int id);
 

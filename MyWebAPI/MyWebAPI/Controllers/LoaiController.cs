@@ -23,9 +23,9 @@ namespace MyWebAPI.Controllers
         }
         // GET: api/<LoaiController>
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAll(int page = 1, int page_size = 0, string sort = null, string filter = null, string search = null)
         {
-            var dsLoais = _loaiRepository.GetAll();
+            var dsLoais = _loaiRepository.GetAll(page, page_size, sort, filter, search);
             return Ok(dsLoais);
         }
 
