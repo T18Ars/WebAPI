@@ -22,6 +22,7 @@ namespace MyWebAPI.Data
         public DbSet<DonHang> DonHangs { get; set; } // sẽ lấy DonHangs làm tên bảng nếu ko dùng fluent api
         public DbSet<DonHangChiTiet> DonHangChiTiets { get; set; }
         public DbSet<NguoiDung> NguoiDungs { get; set; }
+        public DbSet<RefreshToken> RefreshToken { get; set; }
 
         // sử dụng fluent api
         protected override void OnModelCreating(ModelBuilder modelBuilder)

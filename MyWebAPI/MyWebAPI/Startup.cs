@@ -56,10 +56,10 @@ namespace MyWebAPI
                 .AddJwtBearer(opt => {
                     opt.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuer = false, // Xác thực nhà phát hành của token
-                        ValidateAudience = false, // Xác thực người nhận của token
-                        ValidateIssuerSigningKey = true, // Xác thực khóa ký của nhà phát hành token
-                        ValidateLifetime = true, // Xác thực thời gian sống của token
+                        ValidateIssuer = false, // Có xác thực nhà phát hành của token ko
+                        ValidateAudience = false, // Có xác thực người nhận của token ko
+                        ValidateIssuerSigningKey = true, // Có xác thực khóa ký của nhà phát hành token ko
+                        ValidateLifetime = true, // Có kiểm tra token đã hết hạn hay ko
 
                         ValidIssuer = "nhannv", // Nhà phát hành hợp lệ của token
                         ValidAudience = "user", // Người nhận hợp lệ của token
